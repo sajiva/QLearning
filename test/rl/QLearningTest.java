@@ -1,8 +1,19 @@
+package rl;
+
+import org.junit.Test;
+
 import static org.junit.Assert.*;
 
-/**
- * Created by sajiva on 11-Nov-16.
- */
 public class QLearningTest {
+
+    @Test
+    public void canaryTest() {
+        assertTrue(true);
+    }
+
+    @Test
+    public void testChooseRandomOperator() {
+
+    }
 
 }
