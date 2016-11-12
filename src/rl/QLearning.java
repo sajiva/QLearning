@@ -10,6 +10,7 @@ public class QLearning {
     private static long seed = 12345;
     private static Random random = new Random(seed);
     private static int startState;
+    private static int currentState; 
     private static int[][] pickUpLocations = new int[][]{
             {1, 1, 5},
             {3, 3, 5},
@@ -51,7 +52,7 @@ public class QLearning {
     public static void runExperiment() {
 
         initialize();
-        int currentState = startState;
+        currentState = startState;
 
         for (int step = 0; step < steps; step++) {
 
@@ -163,10 +164,10 @@ public class QLearning {
         		break;
         		
         }
-		return choosePolicy(policyNo,validOperators);
+		return operatorChosenByPolicy(policyNo,validOperators);
     }
 
-    private static char choosePolicy(int policyNo, List<Character> validOperators) {
+    private static char operatorChosenByPolicy(int policyNo, List<Character> validOperators) {
     	
     	char selectedOperator = '\0';
     	
@@ -205,12 +206,43 @@ public class QLearning {
         return validOperators.get(index);
     }
 	
-	private static char chooseExploit2Operator(List<Character> validOperators) {
+	private static char chooseExploit1Operator(List<Character> validOperators) {
+		
 		int index = 0;
+		double maxQValue = 0;
+		int N = validOperators.size();
+		ArrayList<Double> validOperatorQValue = new ArrayList<Double>();
+		List<Character>  maxQValueOperators = new ArrayList<>(); 
+		
+		for(int i = 0; i < N ; i++){
+			
+			for(int j = 0; j < 4; j++){  //operators.size() can be hard-coded '4' as 'P' || 'D' is not applicable here
+				
+				if(validOperators.get(i) == operators.get(j)){
+					
+					validOperatorQValue.add(QTable[currentState][j]);
+					break;
+				}
+			}
+		}
+		maxQValue = Collections.max(validOperatorQValue);
+		for (int i = 0; i < N; i++) {
+			
+		       if(validOperatorQValue.get(i) == maxQValue) {
+		    	   maxQValueOperators.add(validOperators.get(i));
+		       }
+		}
+		if(maxQValueOperators.size()==1){
+			//Only one Operator has highest Value
+			return maxQValueOperators.get(0);
+		}
+		else{
+			
+		}
 		return validOperators.get(index);
 	}
-
-	private static char chooseExploit1Operator(List<Character> validOperators) {
+	
+	private static char chooseExploit2Operator(List<Character> validOperators) {
 		int index = 0;
 		return validOperators.get(index);
 	}
