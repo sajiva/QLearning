@@ -51,15 +51,27 @@ public class QLearning {
 
         initialize();
 
+        int terminalState = 0;
+
         for (int step = 0; step < steps; step++) {
 
             if (isTerminalState()) {
-                resetPDworld();
+
                 System.out.println("Number of steps: " + step);
                 printQTable();
+
+                terminalState++;
+                // Exit if terminal state reached 4th time for PExploit1 and PExploit2
+                if (terminalState == 4
+                        && !policy.equalsIgnoreCase(policies.get(0))) {
+                    return;
+                }
+
+                resetPDworld();
             }
 
-            char operator = selectOperator(policy);
+            // Use PRandom for first 100 steps
+            char operator = (step < 100) ? selectOperator(policies.get(0)) : selectOperator(policy);
             currentState = applyAction(operator, alpha);
         }
 
@@ -154,7 +166,14 @@ public class QLearning {
 
         List<Character> validOperators = getValidOperators(state);
 
-        int policyNo = policies.indexOf(policy);
+        int policyNo = 0;
+
+        for (int i = 0; i < policies.size(); i++) {
+            if (policies.get(i).equalsIgnoreCase(policy)) {
+                policyNo = i;
+                break;
+            }
+        }
 
 		return operatorChosenByPolicy(policyNo, validOperators);
     }
