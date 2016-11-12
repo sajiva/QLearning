@@ -1,15 +1,13 @@
-package src.rl;
+package rl;
 
 import java.util.*;
 
 public class QLearning {
 
-    private static int steps = 10000;
-    private static double gamma = 0.3;
-    private static double alpha = 0.3;
     private static long seed = 12345;
     private static Random random = new Random(seed);
-    private static int startState;
+    private static int steps = 10000;
+    private static double gamma = 0.3;
     private static int currentState; 
     private static int[][] pickUpLocations = new int[][]{
             {1, 1, 5},
@@ -46,13 +44,12 @@ public class QLearning {
             }
         }
 
-        startState = 4; // {5,1,0}
+        currentState = 4; // {5,1,0}
     }
 
-    public static void runExperiment() {
+    public static void runExperiment(String policy, double alpha) {
 
         initialize();
-        currentState = startState;
 
         for (int step = 0; step < steps; step++) {
 
@@ -61,8 +58,9 @@ public class QLearning {
                 System.out.println("Number of steps: " + step);
                 printQTable();
             }
-            char operator = selectOperator(states[currentState]);
-            currentState = applyAction(currentState, operator);
+
+            char operator = selectOperator(policy);
+            currentState = applyAction(operator, alpha);
         }
 
         System.out.println("After 10000 steps:");
@@ -77,46 +75,41 @@ public class QLearning {
         }
     }
 
-    private static int applyAction(int state, char operator) {
+    private static int applyAction(char operator, double alpha) {
 
         int nextState = 0;
 
         switch (operator) {
             case 'P':
-//                state[2] = 1;
-                nextState = state + 25;
-                takeBlockFromPickUpLocation(states[state]);
+                nextState = currentState + 25;
+                takeBlockFromPickUpLocation(states[currentState]);
                 break;
             case 'D':
-//                state[2] = 0;
-                nextState = state - 25;
-                dropBlockInDropOffLocation(states[state]);
+                nextState = currentState - 25;
+                dropBlockInDropOffLocation(states[currentState]);
                 break;
             case 'N':
-//                state[0]--;
-                nextState = state - 5;
+                nextState = currentState - 5;
                 break;
             case 'S':
-//                state[0]++;
-                nextState = state + 5;
+                nextState = currentState + 5;
                 break;
             case 'E':
-//                state[1]++;
-                nextState = state + 1;
+                nextState = currentState + 1;
                 break;
             case 'W':
-//                state[1]--;
-                nextState = state - 1;
+                nextState = currentState - 1;
                 break;
         }
 
-        updateQtable(state, operator, nextState);
+        updateQtable(operator, nextState, alpha);
         return nextState;
     }
 
-    public static void updateQtable(int state, char operator, int nextState) {
+    public static void updateQtable(char operator, int nextState, double alpha) {
         int op = operators.indexOf(operator);
-        QTable[state][op] = (1 - alpha) * QTable[state][op] + alpha * (reward(operator) + gamma * maxQvalue(nextState));
+
+        QTable[currentState][op] = (1 - alpha) * QTable[currentState][op] + alpha * (reward(operator) + gamma * maxQvalue(nextState));
     }
 
     public static double reward(char operator) {
@@ -125,10 +118,12 @@ public class QLearning {
     }
 
     public static double maxQvalue(int state) {
+
        return  Arrays.stream(QTable[state]).max().getAsDouble();
     }
 
     public static void takeBlockFromPickUpLocation(int[] state) {
+
         for (int i = 0; i < 3; i++) {
             if (pickUpLocations[i][0] == state[0] && pickUpLocations[i][1] == state[1]) {
                 pickUpLocations[i][2]--;
@@ -138,6 +133,7 @@ public class QLearning {
     }
 
     public static void dropBlockInDropOffLocation(int[] state) {
+
         for (int i = 0; i < 3; i++) {
             if (dropOffLocations[i][0] == state[0] && dropOffLocations[i][1] == state[1]) {
                 dropOffLocations[i][2]++;
@@ -146,9 +142,9 @@ public class QLearning {
         }
     }
 
-    public static char selectOperator(int[] state) {
-    	
-    	int policyNo; 
+    public static char selectOperator(String policy) {
+
+        int[] state = states[currentState];
 
         if (state[2] == 0 && pickUpApplicable(state))
             return 'P';
@@ -157,14 +153,10 @@ public class QLearning {
             return 'D';
 
         List<Character> validOperators = getValidOperators(state);
-        
-        for(policyNo = 0; policyNo < 3; policyNo++ ){
-        	
-        	if(policies.get(policyNo).equals(experimentPolicy))
-        		break;
-        		
-        }
-		return operatorChosenByPolicy(policyNo,validOperators);
+
+        int policyNo = policies.indexOf(policy);
+
+		return operatorChosenByPolicy(policyNo, validOperators);
     }
 
     private static char operatorChosenByPolicy(int policyNo, List<Character> validOperators) {
@@ -188,10 +180,12 @@ public class QLearning {
     		selectedOperator = chooseExploit2Operator(validOperators);
     		break;
     	}
+
 		return selectedOperator;
     }
 
 	public static char chooseRandomOperator(List<Character> validOperators) {
+
         double p = random.nextDouble();
         int index = 0;
         int N = validOperators.size();
@@ -207,45 +201,43 @@ public class QLearning {
     }
 	
 	private static char chooseExploit1Operator(List<Character> validOperators) {
-		
-		int index = 0;
-		double maxQValue = 0;
-		int N = validOperators.size();
-		ArrayList<Double> validOperatorQValue = new ArrayList<Double>();
-		List<Character>  maxQValueOperators = new ArrayList<>(); 
-		
-		for(int i = 0; i < N ; i++){
-			
-			for(int j = 0; j < 4; j++){  //operators.size() can be hard-coded '4' as 'P' || 'D' is not applicable here
-				
-				if(validOperators.get(i) == operators.get(j)){
-					
-					validOperatorQValue.add(QTable[currentState][j]);
-					break;
-				}
-			}
-		}
-		maxQValue = Collections.max(validOperatorQValue);
-		for (int i = 0; i < N; i++) {
-			
-		       if(validOperatorQValue.get(i) == maxQValue) {
-		    	   maxQValueOperators.add(validOperators.get(i));
-		       }
-		}
-		if(maxQValueOperators.size()==1){
-			//Only one Operator has highest Value
-			return maxQValueOperators.get(0);
-		}
-		else{
-			
-		}
-		return validOperators.get(index);
+        double p = random.nextDouble();
+
+        return (p < 0.65) ? chooseMaxQValueOperator(validOperators) : chooseRandomOperator(validOperators);
 	}
 	
 	private static char chooseExploit2Operator(List<Character> validOperators) {
-		int index = 0;
-		return validOperators.get(index);
+        double p = random.nextDouble();
+
+        return (p < 0.9) ? chooseMaxQValueOperator(validOperators) : chooseRandomOperator(validOperators);
 	}
+
+	private static char chooseMaxQValueOperator(List<Character> validOperators) {
+        List<Double> validOperatorQValue = new ArrayList<>();
+        List<Character>  maxQValueOperators = new ArrayList<>();
+
+        for (int i = 0; i < 4; i++) {   //operators.size() can be hard-coded '4' as 'P' || 'D' is not applicable here
+
+            if (validOperators.contains(operators.get(i))) {
+                validOperatorQValue.add(QTable[currentState][i]);
+            }
+        }
+
+        double maxQValue = Collections.max(validOperatorQValue);
+        for (int i = 0; i < validOperatorQValue.size(); i++) {
+
+            if(validOperatorQValue.get(i) == maxQValue) {
+                maxQValueOperators.add(validOperators.get(i));
+            }
+        }
+        if(maxQValueOperators.size() == 1) {
+            //Only one Operator has highest Value
+            return maxQValueOperators.get(0);
+        }
+        else {
+            return chooseRandomOperator(maxQValueOperators);
+        }
+    }
 
     public static List<Character> getValidOperators(int[] state) {
         List<Character> operators = new ArrayList<>();
@@ -303,7 +295,14 @@ public class QLearning {
 
     public static void main(String args[]) {
 
-        runExperiment();
+        // Experiment 1
+//        runExperiment("PRandom", 0.3);
+        // Experiment 2
+        runExperiment("PExploit1", 0.3);
+//        // Experiment 3
+//        runExperiment("PExploit2", 0.3);
+//        // Experiment 4
+//        runExperiment("PExploit2", 0.5);
     }
 }
 
