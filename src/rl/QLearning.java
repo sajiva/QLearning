@@ -1,4 +1,4 @@
-package rl;
+package src.rl;
 
 import java.util.*;
 
@@ -23,7 +23,7 @@ public class QLearning {
     private static int[][] states = new int[50][3];
     private static double[][] QTable = new double[50][6];
     private static List<Character> operators = Arrays.asList('N', 'S', 'E', 'W', 'P', 'D');
-
+    private static List<String> policies = Arrays.asList("PRandom","PExploit1","PExploit2");
 
     public static void initialize() {
         int count = 0;
@@ -146,6 +146,8 @@ public class QLearning {
     }
 
     public static char selectOperator(int[] state) {
+    	
+    	int policyNo; 
 
         if (state[2] == 0 && pickUpApplicable(state))
             return 'P';
@@ -154,10 +156,41 @@ public class QLearning {
             return 'D';
 
         List<Character> validOperators = getValidOperators(state);
-        return chooseRandomOperator(validOperators);
+        
+        for(policyNo = 0; policyNo < 3; policyNo++ ){
+        	
+        	if(policies.get(policyNo).equals(experimentPolicy))
+        		break;
+        		
+        }
+		return choosePolicy(policyNo,validOperators);
     }
 
-    public static char chooseRandomOperator(List<Character> validOperators) {
+    private static char choosePolicy(int policyNo, List<Character> validOperators) {
+    	
+    	char selectedOperator = '\0';
+    	
+    	switch (policyNo) {
+    	
+    	case 0:
+    		//PRandom
+    		selectedOperator = chooseRandomOperator(validOperators);
+    		break;
+    	
+    	case 1:
+    		//PExploit1
+    		selectedOperator = chooseExploit1Operator(validOperators);
+    		break;
+    	
+    	case 2:
+    		//PExploit2
+    		selectedOperator = chooseExploit2Operator(validOperators);
+    		break;
+    	}
+		return selectedOperator;
+    }
+
+	public static char chooseRandomOperator(List<Character> validOperators) {
         double p = random.nextDouble();
         int index = 0;
         int N = validOperators.size();
@@ -171,6 +204,16 @@ public class QLearning {
 
         return validOperators.get(index);
     }
+	
+	private static char chooseExploit2Operator(List<Character> validOperators) {
+		int index = 0;
+		return validOperators.get(index);
+	}
+
+	private static char chooseExploit1Operator(List<Character> validOperators) {
+		int index = 0;
+		return validOperators.get(index);
+	}
 
     public static List<Character> getValidOperators(int[] state) {
         List<Character> operators = new ArrayList<>();
@@ -231,3 +274,4 @@ public class QLearning {
         runExperiment();
     }
 }
+

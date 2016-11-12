@@ -1,4 +1,4 @@
-package rl;
+package test.rl;
 
 import org.junit.Test;
 
