@@ -23,8 +23,10 @@ public class QLearning {
     private static double[][] QTable = new double[50][6];
     private static List<Character> operators = Arrays.asList('N', 'S', 'E', 'W', 'P', 'D');
     private static List<String> policies = Arrays.asList("PRandom","PExploit1","PExploit2");
+    private static double bankAccount = 0;
+    private static int noOfBlocksDelivered = 0;
 
-    public static void initialize() {
+    private static void initialize() {
         int count = 0;
 
         // fill states[0..24] with {1,1,0 to 5,5,0} and states[25..49] with {1,1,1 to 5,5,1}
@@ -55,12 +57,17 @@ public class QLearning {
 
         for (int step = 0; step < steps; step++) {
 
+            if (step == 100) {
+                System.out.println("After 100 steps: ");
+                printQTable(step);
+            }
+
             if (isTerminalState()) {
 
-                System.out.println("Number of steps: " + step);
-                printQTable();
-
                 terminalState++;
+                System.out.println("Terminal state " + terminalState + " Number of steps: " + step);
+                printQTable(step);
+
                 // Exit if terminal state reached 4th time for PExploit1 and PExploit2
                 if (terminalState == 4
                         && !policy.equalsIgnoreCase(policies.get(0))) {
@@ -76,7 +83,7 @@ public class QLearning {
         }
 
         System.out.println("After 10000 steps:");
-        printQTable();
+        printQTable(10000);
     }
 
     private static void resetPDworld() {
@@ -99,6 +106,7 @@ public class QLearning {
             case 'D':
                 nextState = currentState - 25;
                 dropBlockInDropOffLocation(states[currentState]);
+                noOfBlocksDelivered++;
                 break;
             case 'N':
                 nextState = currentState - 5;
@@ -118,23 +126,24 @@ public class QLearning {
         return nextState;
     }
 
-    public static void updateQtable(char operator, int nextState, double alpha) {
+    private static void updateQtable(char operator, int nextState, double alpha) {
         int op = operators.indexOf(operator);
 
         QTable[currentState][op] = (1 - alpha) * QTable[currentState][op] + alpha * (reward(operator) + gamma * maxQvalue(nextState));
+        bankAccount += reward(operator);
     }
 
-    public static double reward(char operator) {
+    private static double reward(char operator) {
 
         return (operator == 'D' || operator == 'P') ? 13 : -1;
     }
 
-    public static double maxQvalue(int state) {
+    private static double maxQvalue(int state) {
 
        return  Arrays.stream(QTable[state]).max().getAsDouble();
     }
 
-    public static void takeBlockFromPickUpLocation(int[] state) {
+    private static void takeBlockFromPickUpLocation(int[] state) {
 
         for (int i = 0; i < 3; i++) {
             if (pickUpLocations[i][0] == state[0] && pickUpLocations[i][1] == state[1]) {
@@ -144,7 +153,7 @@ public class QLearning {
         }
     }
 
-    public static void dropBlockInDropOffLocation(int[] state) {
+    private static void dropBlockInDropOffLocation(int[] state) {
 
         for (int i = 0; i < 3; i++) {
             if (dropOffLocations[i][0] == state[0] && dropOffLocations[i][1] == state[1]) {
@@ -154,7 +163,7 @@ public class QLearning {
         }
     }
 
-    public static char selectOperator(String policy) {
+    private static char selectOperator(String policy) {
 
         int[] state = states[currentState];
 
@@ -203,7 +212,7 @@ public class QLearning {
 		return selectedOperator;
     }
 
-	public static char chooseRandomOperator(List<Character> validOperators) {
+	private static char chooseRandomOperator(List<Character> validOperators) {
 
         double p = random.nextDouble();
         int index = 0;
@@ -258,7 +267,7 @@ public class QLearning {
         }
     }
 
-    public static List<Character> getValidOperators(int[] state) {
+    private static List<Character> getValidOperators(int[] state) {
         List<Character> operators = new ArrayList<>();
 
         if (state[0] > 1)
@@ -273,7 +282,7 @@ public class QLearning {
         return operators;
     }
 
-    public static boolean pickUpApplicable(int[] state) {
+    private static boolean pickUpApplicable(int[] state) {
 
         for (int i = 0; i < 3; i++) {
             if (pickUpLocations[i][0] == state[0] && pickUpLocations[i][1] == state[1] && pickUpLocations[i][2] > 0)
@@ -283,7 +292,7 @@ public class QLearning {
         return false;
     }
 
-    public static boolean dropOffApplicable(int[] state) {
+    private static boolean dropOffApplicable(int[] state) {
 
         for (int i = 0; i < 3; i++) {
             if (dropOffLocations[i][0] == state[0] && dropOffLocations[i][1] == state[1] && dropOffLocations[i][2] < 5)
@@ -294,14 +303,19 @@ public class QLearning {
     }
 
 
-    public static boolean isTerminalState() {
+    private static boolean isTerminalState() {
 
         return (dropOffLocations[0][2] == 5
                 && dropOffLocations[1][2] == 5
                 && dropOffLocations[2][2] == 5);
     }
 
-    public static void printQTable() {
+    private static void printQTable(int step) {
+
+        System.out.println("Bank account of the agent: " + bankAccount);
+        System.out.println(String.format("Rewards received/Number of operators: %.4f", bankAccount/step));
+        System.out.println(String.format("Blocks delivered/Number of operators: %.4f",  (double)noOfBlocksDelivered/step));
+        System.out.println("Q-Table: ");
         System.out.println("\t\t\tN\t\tS\t\tE\t\tW\t\tP\t\tD\n");
         for (int i = 0; i < 50; i++) {
             System.out.print("(" + states[i][0] + "," + states[i][1] + "," + states[i][2] + ")" + "\t\t");
@@ -310,14 +324,15 @@ public class QLearning {
             }
             System.out.print("\n");
         }
+        System.out.print("\n");
     }
 
     public static void main(String args[]) {
 
         // Experiment 1
-//        runExperiment("PRandom", 0.3);
+        runExperiment("PRandom", 0.3);
         // Experiment 2
-        runExperiment("PExploit1", 0.3);
+//        runExperiment("PExploit1", 0.3);
 //        // Experiment 3
 //        runExperiment("PExploit2", 0.3);
 //        // Experiment 4
