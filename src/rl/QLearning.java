@@ -1,4 +1,4 @@
-package rl;
+package src.rl;
 
 import java.util.*;
 
@@ -329,14 +329,25 @@ public class QLearning {
 
     public static void main(String args[]) {
 
-        // Experiment 1
-        runExperiment("PRandom", 0.3);
-        // Experiment 2
-//        runExperiment("PExploit1", 0.3);
-//        // Experiment 3
-//        runExperiment("PExploit2", 0.3);
-//        // Experiment 4
-//        runExperiment("PExploit2", 0.5);
+    	Scanner scanner = new Scanner(System.in);
+    	    
+    	System.out.println("Enter the Experiment No : ");
+    	
+    	int experimentNo = scanner.nextInt();
+    	    	
+    	if (experimentNo ==1)
+    		runExperiment("PRandom", 0.3);		// Experiment 1
+
+    	else if (experimentNo == 2)
+        	runExperiment("PExploit1", 0.3);    // Experiment 2
+    	
+    	else if (experimentNo == 3)		
+        	runExperiment("PExploit2", 0.3);	// Experiment 3     
+    	
+    	else if (experimentNo == 4)
+    		runExperiment("PExploit2", 0.5);	// Experiment 4
+    	
+    	scanner.close();
     }
 }
 
