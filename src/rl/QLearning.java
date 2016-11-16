@@ -23,7 +23,7 @@ public class QLearning {
     };
     private static int[][] states = new int[50][3];
     private static double[][] QTable = new double[50][6];
-    private static List<Character> operators = Arrays.asList('N', 'S', 'E', 'W', 'P', 'D');
+    private static List<Character> operators = Arrays.asList('N', 'E', 'W', 'S', 'P', 'D');
     private static List<String> policies = Arrays.asList("PRandom","PExploit1","PExploit2");
     private static double bankAccount = 0;
     private static int noOfBlocksDelivered = 0;
@@ -274,12 +274,12 @@ public class QLearning {
 
         if (state[0] > 1)
             operators.add('N');
-        if (state[0] < 5)
-            operators.add('S');
-        if (state[1] > 1)
-            operators.add('W');
         if (state[1] < 5)
             operators.add('E');
+        if (state[1] > 1)
+            operators.add('W');
+        if (state[0] < 5)
+            operators.add('S');
 
         return operators;
     }
@@ -318,10 +318,10 @@ public class QLearning {
         System.out.println(String.format("Rewards received/Number of operators: %.4f", bankAccount/step));
         System.out.println(String.format("Blocks delivered/Number of operators: %.4f",  (double)noOfBlocksDelivered/step));
         System.out.println("Q-Table: ");
-        System.out.println("\t\t\tN\t\tS\t\tE\t\tW\t\tP\t\tD\n");
+        System.out.println("\t\t\tN\t\tE\t\tW\t\tS\n");
         for (int i = 0; i < 50; i++) {
             System.out.print("(" + states[i][0] + "," + states[i][1] + "," + states[i][2] + ")" + "\t\t");
-            for (int j = 0; j < 6; j++) {
+            for (int j = 0; j < 4; j++) {
                 System.out.print(String.format("%.2f\t", QTable[i][j]));
             }
             System.out.print("\n");
