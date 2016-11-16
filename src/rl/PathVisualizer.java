@@ -1,4 +1,4 @@
-package rl;
+package src.rl;
 
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -23,7 +23,7 @@ public class PathVisualizer extends Application {
         grid.setAlignment(Pos.CENTER);
         grid.setGridLinesVisible(true);
 
-        Scene scene = new Scene(grid, 800, 800);
+        Scene scene = new Scene(grid, 1500, 1500);
         primaryStage.setScene(scene);
 
         String upArrow = "\u2191";
@@ -38,6 +38,8 @@ public class PathVisualizer extends Application {
 //            for (int j = 0; j < 5; j++) {
             List<Character> paths = attractivePaths.get(i);
             Text arrows = null;
+            System.out.println("State No : " + i);
+            System.out.println("Path size : " + paths.size());
             if (paths.size() == 1) {
                 switch (paths.get(0)) {
                     case 'N':
@@ -57,16 +59,50 @@ public class PathVisualizer extends Application {
                 if (paths.contains('N') && paths.contains('E')) {
                     arrows = new Text(upArrow + "\n" + rightArrow);
                 } else if (paths.contains('N') && paths.contains('W')) {
-                    arrows = new Text(upArrow + "\n" + leftArrow);
+                    arrows = new Text(leftArrow + "\n" + upArrow);
+                } else if (paths.contains('N') && paths.contains('S')) {
+                    arrows = new Text(upArrow + "\n" + downArrow);
                 } else if (paths.contains('S') && paths.contains('E')) {
-                    arrows = new Text(rightArrow + "\n" + downArrow);
+                    arrows = new Text(downArrow + "\n" + rightArrow);
                 } else if (paths.contains('S') && paths.contains('W')) {
                     arrows = new Text(leftArrow + "\n" + downArrow);
+                } else if (paths.contains('E') && paths.contains('W')) {
+                    arrows = new Text(leftArrow + rightArrow);
                 }
+            } else if (paths.size() == 3) {
+                if (paths.contains('N') && paths.contains('S') && paths.contains('E')) {
+                    arrows = new Text(upArrow + "\n" + "   " + rightArrow + "\n" + downArrow);
+                } else if (paths.contains('N') && paths.contains('S') && paths.contains('W')) {
+                    arrows = new Text(upArrow + "\n" + leftArrow + "\n" + downArrow);
+                } else if (paths.contains('N') && paths.contains('E') && paths.contains('W')) {
+                    arrows = new Text(upArrow + "\n" + leftArrow + rightArrow);
+                } else if (paths.contains('S') && paths.contains('E') && paths.contains('W')) {
+                    arrows = new Text(leftArrow + rightArrow + "\n" + downArrow);
+                } 
+            } else if (paths.size() == 4) {
+                if (paths.contains('N') && paths.contains('S') && paths.contains('E') && paths.contains('W')) {
+                    arrows = new Text(upArrow + "\n" + leftArrow + rightArrow + "\n" + downArrow  );
+                } 
             }
-//                Text arrows = new Text("\u2191\n\u2190   \u2192\n\u2193");
+            	//Text arrows = new Text("\u2191\n\u2190   \u2192\n\u2193");
                 arrows.setFont(Font.font("Tahoma", FontWeight.NORMAL, 32));
                 arrows.setTextAlignment(TextAlignment.CENTER);
+                if(r == 0){
+                	grid.add(new Text(" States "), 0, r);
+                	grid.add(new Text(" with"), 1, r);
+                	grid.add(new Text(" x ="), 2, r);
+                	grid.add(new Text(" 0"), 3, r);
+                	grid.add(new Text(""), 4, r);
+                	r++;
+                }
+                if(r == 6){
+                	grid.add(new Text(" States "), 0, r);
+                	grid.add(new Text(" with"), 1, r);
+                	grid.add(new Text(" x ="), 2, r);
+                	grid.add(new Text(" 1"), 3, r);
+                	grid.add(new Text(""), 4, r);
+                	r++;
+                }
                 grid.add(arrows, c, r);
 //            }
             if (c == 4) r++;

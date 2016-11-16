@@ -1,4 +1,4 @@
-package rl;
+package src.rl;
 
 import javafx.application.Application;
 
