@@ -1,4 +1,4 @@
-package src.rl;
+package rl;
 
 import javafx.application.Application;
 
@@ -345,7 +345,8 @@ public class QLearning {
             List<Character> paths = new ArrayList<>();
 
             for (int k = 0; k < 4; k++) {
-                if (Double.compare(QTable[i][k], maxQValue) == 0) {
+                if (Double.compare(QTable[i][k], maxQValue) == 0
+                        && validOperators.contains(operators.get(k))) {
                     paths.add(operators.get(k));
                 }
             }
