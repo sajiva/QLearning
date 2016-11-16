@@ -1,4 +1,6 @@
-package src.rl;
+package rl;
+
+import javafx.application.Application;
 
 import java.util.*;
 
@@ -327,27 +329,57 @@ public class QLearning {
         System.out.print("\n");
     }
 
+    public static List<List<Character>> findAttractivePaths() {
+        List<List<Character>> attractivePaths = new ArrayList<>();
+
+        for (int i = 0; i < 50; i++) {
+
+            List<Character> validOperators = getValidOperators(states[i]);
+            List<Double> qValues = new ArrayList<>();
+
+            for (int j = 0; j < 4; j++) {
+                if (validOperators.contains(operators.get(j)))
+                qValues.add(QTable[i][j]);
+            }
+            double maxQValue = Collections.max(qValues);
+            List<Character> paths = new ArrayList<>();
+
+            for (int k = 0; k < 4; k++) {
+                if (Double.compare(QTable[i][k], maxQValue) == 0) {
+                    paths.add(operators.get(k));
+                }
+            }
+
+            attractivePaths.add(paths);
+        }
+
+        return attractivePaths;
+    }
+
     public static void main(String args[]) {
 
     	Scanner scanner = new Scanner(System.in);
-    	    
+
     	System.out.println("Enter the Experiment No : ");
-    	
+
     	int experimentNo = scanner.nextInt();
-    	    	
+
     	if (experimentNo ==1)
     		runExperiment("PRandom", 0.3);		// Experiment 1
 
     	else if (experimentNo == 2)
         	runExperiment("PExploit1", 0.3);    // Experiment 2
-    	
-    	else if (experimentNo == 3)		
-        	runExperiment("PExploit2", 0.3);	// Experiment 3     
-    	
+
+    	else if (experimentNo == 3)
+        	runExperiment("PExploit2", 0.3);	// Experiment 3
+
     	else if (experimentNo == 4)
     		runExperiment("PExploit2", 0.5);	// Experiment 4
-    	
+
     	scanner.close();
+
+        Application.launch(PathVisualizer.class);
+
     }
 }
 
