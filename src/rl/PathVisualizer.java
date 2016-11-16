@@ -38,8 +38,8 @@ public class PathVisualizer extends Application {
 //            for (int j = 0; j < 5; j++) {
             List<Character> paths = attractivePaths.get(i);
             Text arrows = null;
-            System.out.println("State No : " + i);
-            System.out.println("Path size : " + paths.size());
+//            System.out.println("State No : " + i);
+//            System.out.println("Path size : " + paths.size());
             if (paths.size() == 1) {
                 switch (paths.get(0)) {
                     case 'N':

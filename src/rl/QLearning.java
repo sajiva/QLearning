@@ -59,8 +59,8 @@ public class QLearning {
 
         for (int step = 0; step < steps; step++) {
 
-            if (step == 100) {
-                System.out.println("After 100 steps: ");
+            if (step % 100 == 0 && step <= 2000 && step > 0) {
+                System.out.println("Steps: " + step);
                 printQTable(step);
             }
 
@@ -84,7 +84,7 @@ public class QLearning {
             currentState = applyAction(operator, alpha);
         }
 
-        System.out.println("After 10000 steps:");
+        System.out.println("Steps: 10000");
         printQTable(10000);
     }
 
