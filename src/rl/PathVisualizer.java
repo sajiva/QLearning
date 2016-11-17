@@ -27,15 +27,15 @@ public class PathVisualizer extends Application {
 	*/
     @Override
     public void start(Stage primaryStage) throws Exception {
-        
+
         QLearning.initialize();
 
         QLearning.runExperiment("PRandom", 0.3, 1, seed1);	// Experiment 1 Execution 1
-        primaryStage.setTitle("Q-learning Path Visualization 1");
+        primaryStage.setTitle("Experiment 1 Execution 1");
         visualizePath(primaryStage);
 
         Stage secondStage = new Stage();
-        secondStage.setTitle("Q-learning Path Visualization 2");
+        secondStage.setTitle("Experiment 1 Execution 2");
         QLearning.runExperiment("PRandom", 0.3, 1, seed2);	// Experiment 1 Execution 2
         visualizePath(secondStage);
 
@@ -139,7 +139,7 @@ public class PathVisualizer extends Application {
         grid.setAlignment(Pos.CENTER);
         grid.setGridLinesVisible(true);
 
-        Scene scene = new Scene(grid, 1000, 2000);
+        Scene scene = new Scene(grid, 800, 800);
         primaryStage.setScene(scene);
 
         String upArrow = "\u2191";
@@ -147,20 +147,19 @@ public class PathVisualizer extends Application {
         String leftArrow = "\u2190";
         String rightArrow = "\u2192";
 
-        QLearning qLearningObj = QLearning.findAttractivePaths();
-
+        List<List<Character>> attractivePaths = QLearning.findAttractivePaths();
         int r = 0;
         for (int i = 0; i < 50; i++) {
             int c = i % 5;
 //            for (int j = 0; j < 5; j++) {
-            List<Character> paths = qLearningObj.attractivePaths.get(i);
-            List<Double> maxQValuesList = qLearningObj.attractivePathsQValues.get(i);
+            List<Character> paths = attractivePaths.get(i);
+
             Text arrows = null;
 
             if (paths.size() == 1) {
                 switch (paths.get(0)) {
                     case 'N':
-                        arrows = new Text(String.format("%.2f", maxQValuesList.get(0)) + upArrow);
+                        arrows = new Text(upArrow);
                         break;
                     case 'E':
                         arrows = new Text(rightArrow);
@@ -220,7 +219,7 @@ public class PathVisualizer extends Application {
                 grid.add(new Text("      "), 4, r);
                 r++;
             }
-//            arrows.setFont(Font.font("Tahoma", FontWeight.NORMAL, 32));
+            arrows.setFont(Font.font("Tahoma", FontWeight.NORMAL, 32));
             arrows.setTextAlignment(TextAlignment.CENTER);
             grid.add(arrows, c, r);
 //            }
