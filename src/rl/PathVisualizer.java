@@ -23,7 +23,7 @@ public class PathVisualizer extends Application {
         grid.setAlignment(Pos.CENTER);
         grid.setGridLinesVisible(true);
 
-        Scene scene = new Scene(grid, 1500, 1500);
+        Scene scene = new Scene(grid, 1000, 2000);
         primaryStage.setScene(scene);
 
         String upArrow = "\u2191";
@@ -89,7 +89,7 @@ public class PathVisualizer extends Application {
 
                 if(r == 0){
                 	grid.add(new Text(" States"), 0, r);
-                	grid.add(new Text(" with "), 1, r);
+                	grid.add(new Text("  with "), 1, r);
                 	grid.add(new Text("  x = "), 2, r);
                 	grid.add(new Text(" 0    "), 3, r);
                 	grid.add(new Text("      "), 4, r);

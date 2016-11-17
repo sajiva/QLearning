@@ -1,11 +1,14 @@
-package rl;
+package src.rl;
 
 import javafx.application.Application;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.*;
 
 public class QLearning {
 
+	private static PrintWriter writer;
     private static long seed = 12345;
     private static Random random = new Random(seed);
     private static int steps = 10000;
@@ -23,6 +26,7 @@ public class QLearning {
     };
     private static int[][] states = new int[50][3];
     private static double[][] QTable = new double[50][6];
+    private static int[] expExecutionNumber = new int[]{0,0,0,0}; // Experiment No 1 to 4 Execution Number
     private static List<Character> operators = Arrays.asList('N', 'E', 'W', 'S', 'P', 'D');
     private static List<String> policies = Arrays.asList("PRandom","PExploit1","PExploit2");
     private static double bankAccount = 0;
@@ -54,10 +58,21 @@ public class QLearning {
     public static void runExperiment(String policy, double alpha, int experimentNo) {
 
         initialize();
-
+                
         int terminalState = 0; 
         boolean firstDropOffLocationFilled = false;
-
+        
+        writer.print("Experiment No : " + experimentNo + "\t");
+        
+        for(int i = 1; i <= 4;i++ ){
+        	if (experimentNo == i){
+        		expExecutionNumber[i-1]++;
+        		writer.print("Experiment Execution No : " + expExecutionNumber[i-1] + "\t");
+        	}
+        }
+        
+        writer.println("Seed : " + seed);
+        
         for (int step = 0; step < steps; step++) {
         	
             if ((experimentNo == 1 || experimentNo == 2) && step > 0  && !firstDropOffLocationFilled) {
@@ -65,7 +80,7 @@ public class QLearning {
                 for (int i = 0; i < 3; i++) {
                     if (dropOffLocations[i][2] == 5) {
                     	firstDropOffLocationFilled = true;
-                        System.out.println("First drop-off location filled.");
+                        writer.println("First drop-off location filled.");
                     	printQTable(step);
                         break;
                     }
@@ -83,10 +98,10 @@ public class QLearning {
             if (isTerminalState()) {
 
                 terminalState++;
-                System.out.println("Terminal state " + terminalState);
+                writer.println("Terminal state " + terminalState);
                 printQTable(step);
 
-                // Exit if terminal state reached 4th time for PExploit1 and PExploit2
+//Doubt              // Exit if terminal state reached 4th time for PExploit1 and PExploit2
                 if (terminalState == 4 && !policy.equalsIgnoreCase(policies.get(0))) {
                     printRewards(step);
                     return;
@@ -330,22 +345,33 @@ public class QLearning {
 
     private static void printQTable(int step) {
 
-        System.out.println("Step: " + step);
-        System.out.println("\t\t\tN\t\tE\t\tW\t\tS\n");
-        for (int i = 0; i < 50; i++) {
-            System.out.print("(" + states[i][0] + "," + states[i][1] + "," + states[i][2] + ")" + "\t\t");
+        writer.println("Current Step : " + step);
+        writer.println("X : " + states[0][2]); // X = 0
+        writer.println("\t\t\tN\tE\tW\tS\n");
+        for (int i = 0; i < 25; i++) {
+            writer.print("(" + states[i][0] + "," + states[i][1] + ")" + "\t\t\t");
             for (int j = 0; j < 4; j++) {
-                System.out.print(String.format("%.2f\t", QTable[i][j]));
+                writer.print(String.format("%.2f\t", QTable[i][j]));
             }
-            System.out.print("\n");
+            writer.print("\n");
         }
-        System.out.print("\n");
+        writer.print("\n");
+        writer.println("X : " + states[25][2]); // X = 1
+        writer.println("\t\t\tN\tE\tW\tS\n");
+        for (int i = 25; i < 50; i++) {
+            writer.print("(" + states[i][0] + "," + states[i][1] + ")" + "\t\t\t");
+            for (int j = 0; j < 4; j++) {
+                writer.print(String.format("%.2f\t", QTable[i][j]));
+            }
+            writer.print("\n");
+        }
+        writer.print("\n");
     }
 
     private static void printRewards(int step) {
-        System.out.println("Bank account of the agent: " + bankAccount);
-        System.out.println(String.format("Rewards received/Number of operators: %.4f", bankAccount/step));
-        System.out.println(String.format("Blocks delivered/Number of operators: %.4f",  (double)noOfBlocksDelivered/step));
+        writer.println("Bank account of the agent: " + bankAccount);
+        writer.println(String.format("Rewards received/Number of operators: %.4f", bankAccount/step));
+        writer.println(String.format("Blocks delivered/Number of operators: %.4f",  (double)noOfBlocksDelivered/step));
     }
 
     public static List<List<Character>> findAttractivePaths() {
@@ -374,13 +400,15 @@ public class QLearning {
         return attractivePaths;
     }
 
-    public static void main(String args[]) {
+    public static void main(String args[]) throws FileNotFoundException {
 
     	Scanner scanner = new Scanner(System.in);
 
     	System.out.println("Enter the Experiment No : ");
-
+    	
     	int experimentNo = scanner.nextInt();
+    	
+    	writer = new PrintWriter("Output.txt");
 
     	if (experimentNo ==1)
     		runExperiment("PRandom", 0.3, experimentNo);		// Experiment 1
