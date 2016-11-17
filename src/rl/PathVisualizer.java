@@ -111,7 +111,7 @@ public class PathVisualizer extends Application {
                 grid.add(new Text("  x = "), 2, r);
                 grid.add(new Text(" 0    "), 3, r);
                 grid.add(new Text("      "), 4, r);
-                r++;
+                r++; 
             }
             if(r == 6){
                 grid.add(new Text(" States"), 0, r);

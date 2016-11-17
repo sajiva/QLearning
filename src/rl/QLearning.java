@@ -130,7 +130,7 @@ public class QLearning {
                 if (terminalState == 4 && !policy.equalsIgnoreCase(policies.get(0))) {
                     printRewards(step);
                     return;
-                }
+                } 
 
                 resetPDworld();
             }
