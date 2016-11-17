@@ -9,8 +9,9 @@ import java.util.*;
 public class QLearning {
 
 	private static PrintWriter writer;
-    private static long seed = 12345;
-    private static Random random = new Random(seed);
+	private static long seed1 = 12345;
+    private static long seed2 = 67890;
+    private static Random random;
     private static int steps = 10000;
     private static double gamma = 0.3;
     private static int currentState; 
@@ -55,7 +56,7 @@ public class QLearning {
         currentState = 4; // {5,1,0}
     }
 
-    public static void runExperiment(String policy, double alpha, int experimentNo) {
+    public static void runExperiment(String policy, double alpha, int experimentNo, long seed) {
 
         initialize();
                 
@@ -72,6 +73,8 @@ public class QLearning {
         }
         
         writer.println("Seed : " + seed);
+        
+        random = new Random(seed);
         
         for (int step = 0; step < steps; step++) {
         	
@@ -101,7 +104,7 @@ public class QLearning {
                 writer.println("Terminal state " + terminalState);
                 printQTable(step);
 
-//Doubt              // Exit if terminal state reached 4th time for PExploit1 and PExploit2
+                // Exit if terminal state reached 4th time for PExploit1 and PExploit2
                 if (terminalState == 4 && !policy.equalsIgnoreCase(policies.get(0))) {
                     printRewards(step);
                     return;
@@ -402,27 +405,31 @@ public class QLearning {
 
     public static void main(String args[]) throws FileNotFoundException {
 
-    	Scanner scanner = new Scanner(System.in);
-
-    	System.out.println("Enter the Experiment No : ");
-    	
-    	int experimentNo = scanner.nextInt();
+    	//Scanner scanner = new Scanner(System.in);
+    	//System.out.println("Enter the Experiment No : ");
+    	//int experimentNo = scanner.nextInt();
     	
     	writer = new PrintWriter("Output.txt");
+    	    	
+    	//if (experimentNo ==1)
+    	runExperiment("PRandom", 0.3, 1, seed1);	// Experiment 1 Execution 1
+    	Application.launch(PathVisualizer.class);
+   		runExperiment("PRandom", 0.3, 1, seed2);	// Experiment 1 Execution 2
+   		Application.launch(PathVisualizer.class);
+   		
+    	//else if (experimentNo == 2)
+       	runExperiment("PExploit1", 0.3, 2, seed1);  // Experiment 2 Execution 1
+       	runExperiment("PExploit1", 0.3, 2, seed2);  // Experiment 2 Execution 2
 
-    	if (experimentNo ==1)
-    		runExperiment("PRandom", 0.3, experimentNo);		// Experiment 1
-
-    	else if (experimentNo == 2)
-        	runExperiment("PExploit1", 0.3, experimentNo);    // Experiment 2
-
-    	else if (experimentNo == 3)
-        	runExperiment("PExploit2", 0.3, experimentNo);	// Experiment 3
-
-    	else if (experimentNo == 4)
-    		runExperiment("PExploit2", 0.5, experimentNo);	// Experiment 4
-
-    	scanner.close();
+    	//else if (experimentNo == 3) 
+       	runExperiment("PExploit2", 0.3, 3, seed1);	// Experiment 3 Execution 1
+       	runExperiment("PExploit2", 0.3, 3, seed2);	// Experiment 3 Execution 2
+    	
+       	//else if (experimentNo == 4)
+    	runExperiment("PExploit2", 0.5, 4, seed1);	// Experiment 4 Execution 1
+    	runExperiment("PExploit2", 0.5, 4, seed2);	// Experiment 4 Execution 2
+    	
+    	//scanner.close();
 
         Application.launch(PathVisualizer.class);
 
