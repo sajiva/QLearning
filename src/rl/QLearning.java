@@ -30,13 +30,13 @@ public class QLearning {
     private static List<String> policies = Arrays.asList("PRandom","PExploit1","PExploit2");
     private static double bankAccount = 0;
     private static int noOfBlocksDelivered = 0;
-//    List<List<Character>> attractivePaths;
-//	List<List<Double>> attractivePathsQValues;
+    List<List<Character>> attractivePaths;
+	List<List<Double>> attractivePathsQValues;
 
-//    QLearning(List<List<Character>> attractivePaths_Visualizer, List<List<Double>> attractivePathsQValues_Visualizer){
-//    	attractivePaths = attractivePaths_Visualizer;
-//		attractivePathsQValues = attractivePathsQValues_Visualizer;
-//    }
+    QLearning(List<List<Character>> attractivePaths_Visualizer, List<List<Double>> attractivePathsQValues_Visualizer){
+    	attractivePaths = attractivePaths_Visualizer;
+		attractivePathsQValues = attractivePathsQValues_Visualizer;
+    }
     public static void initialize() {
         int count = 0;
 
@@ -393,8 +393,9 @@ public class QLearning {
         writer.println(String.format("Blocks delivered/Number of operators: %.4f",  (double)noOfBlocksDelivered/step));
     }
 
-    public static List<List<Character>> findAttractivePaths() {
+    public static QLearning findAttractivePaths() {
         List<List<Character>> attractivePaths = new ArrayList<>();
+        List<List<Double>> attractivePathsQValues = new ArrayList<>();
 
         for (int i = 0; i < 50; i++) {
 
@@ -416,9 +417,9 @@ public class QLearning {
                 }
             }
             attractivePaths.add(paths);
+            attractivePathsQValues.add(maxQValuesList);
         }
-
-        return attractivePaths;
+        return new QLearning(attractivePaths,attractivePathsQValues);
     }
 
     public static void main(String args[]) throws FileNotFoundException {
