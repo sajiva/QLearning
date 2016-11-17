@@ -1,4 +1,4 @@
-package rl;
+package src.rl;
 
 import javafx.application.Application;
 
@@ -51,19 +51,34 @@ public class QLearning {
         currentState = 4; // {5,1,0}
     }
 
-    public static void runExperiment(String policy, double alpha) {
+    public static void runExperiment(String policy, double alpha, int experimentNo) {
 
         initialize();
 
-        int terminalState = 0;
+        int terminalState = 0; 
+        boolean firstDropOffLocationFilled = false;
 
         for (int step = 0; step < steps; step++) {
+        	
+            if ((experimentNo == 1 || experimentNo == 2) && step >= 100 ) {
+                System.out.println("Steps: " + step);
+                //printQTable(step);
+                
+                // First Drop Off Location Filled
+                for (int i = 0; i < 3; i++) {
+                    if (dropOffLocations[i][2] == 5 && firstDropOffLocationFilled == false) {
+                    	firstDropOffLocationFilled = true;
+                    	printQTable(step);
+                        break;
+                    }
+                }
+            }
 
-            if (step % 100 == 0 && step <= 2000 && step > 0) {
+            if ((experimentNo == 2 || experimentNo == 4) && step % 100 == 0 && step <= 2000 && step > 0) {
                 System.out.println("Steps: " + step);
                 printQTable(step);
             }
-
+            
             if (isTerminalState()) {
 
                 terminalState++;
@@ -71,8 +86,7 @@ public class QLearning {
                 printQTable(step);
 
                 // Exit if terminal state reached 4th time for PExploit1 and PExploit2
-                if (terminalState == 4
-                        && !policy.equalsIgnoreCase(policies.get(0))) {
+                if (terminalState == 4 && !policy.equalsIgnoreCase(policies.get(0))) {
                     return;
                 }
 
@@ -350,10 +364,8 @@ public class QLearning {
                     paths.add(operators.get(k));
                 }
             }
-
             attractivePaths.add(paths);
         }
-
         return attractivePaths;
     }
 
@@ -366,16 +378,16 @@ public class QLearning {
     	int experimentNo = scanner.nextInt();
 
     	if (experimentNo ==1)
-    		runExperiment("PRandom", 0.3);		// Experiment 1
+    		runExperiment("PRandom", 0.3, experimentNo);		// Experiment 1
 
     	else if (experimentNo == 2)
-        	runExperiment("PExploit1", 0.3);    // Experiment 2
+        	runExperiment("PExploit1", 0.3, experimentNo);    // Experiment 2
 
     	else if (experimentNo == 3)
-        	runExperiment("PExploit2", 0.3);	// Experiment 3
+        	runExperiment("PExploit2", 0.3, experimentNo);	// Experiment 3
 
     	else if (experimentNo == 4)
-    		runExperiment("PExploit2", 0.5);	// Experiment 4
+    		runExperiment("PExploit2", 0.5, experimentNo);	// Experiment 4
 
     	scanner.close();
 
