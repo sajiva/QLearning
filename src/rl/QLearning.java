@@ -1,4 +1,4 @@
-package rl;
+package src.rl;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -7,8 +7,6 @@ import java.util.*;
 public class QLearning {
 
 	private static PrintWriter writer;
-//	private static long seed1 = 12345;
-//    private static long seed2 = 67890;
     private static Random random;
     private static int steps = 10000;
     private static double gamma = 0.3;
@@ -422,34 +420,5 @@ public class QLearning {
         return new QLearning(attractivePaths,attractivePathsQValues);
     }
 
-    public static void main(String args[]) throws FileNotFoundException {
-
-    	//Scanner scanner = new Scanner(System.in);
-    	//System.out.println("Enter the Experiment No : ");
-    	//int experimentNo = scanner.nextInt();
-    	
-//    	writer = new PrintWriter("Output.txt");
-    	    	
-    	//if (experimentNo ==1)
-//    	runExperiment("PRandom", 0.3, 1, seed1);	// Experiment 1 Execution 1
-    	/*runExperiment("PRandom", 0.3, 1, seed2);	// Experiment 1 Execution 2
-   		   		
-    	//else if (experimentNo == 2)
-       	runExperiment("PExploit1", 0.3, 2, seed1);  // Experiment 2 Execution 1
-       	runExperiment("PExploit1", 0.3, 2, seed2);  // Experiment 2 Execution 2
-
-    	//else if (experimentNo == 3) 
-       	runExperiment("PExploit2", 0.3, 3, seed1);	// Experiment 3 Execution 1
-       	runExperiment("PExploit2", 0.3, 3, seed2);	// Experiment 3 Execution 2
-    	
-       	//else if (experimentNo == 4)
-    	runExperiment("PExploit2", 0.5, 4, seed1);	// Experiment 4 Execution 1
-    	runExperiment("PExploit2", 0.5, 4, seed2);	// Experiment 4 Execution 2
-    	
-    	//scanner.close();*/
-
-//        Application.launch(PathVisualizer.class);
-
-    }
 }
 
