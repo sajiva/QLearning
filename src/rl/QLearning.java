@@ -1,6 +1,4 @@
-package src.rl;
-
-import javafx.application.Application;
+package rl;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -9,8 +7,8 @@ import java.util.*;
 public class QLearning {
 
 	private static PrintWriter writer;
-	private static long seed1 = 12345;
-    private static long seed2 = 67890;
+//	private static long seed1 = 12345;
+//    private static long seed2 = 67890;
     private static Random random;
     private static int steps = 10000;
     private static double gamma = 0.3;
@@ -39,7 +37,7 @@ public class QLearning {
     	attractivePaths = attractivePaths_Visualizer;
 		attractivePathsQValues = attractivePathsQValues_Visualizer;
     }
-    private static void initialize() {
+    public static void initialize() {
         int count = 0;
 
         // fill states[0..24] with {1,1,0 to 5,5,0} and states[25..49] with {1,1,1 to 5,5,1}
@@ -52,6 +50,15 @@ public class QLearning {
             }
         }
 
+        try {
+            writer = new PrintWriter("Output.txt");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void resetQTableAndStartState() {
+
         // initialize QTable values to zero
         for (int i = 0; i < 50; i++) {
             for (int j = 0; j < 6; j++) {
@@ -60,11 +67,22 @@ public class QLearning {
         }
 
         currentState = 4; // {5,1,0}
+        bankAccount = 0;
+        noOfBlocksDelivered = 0;
+    }
+
+    private static void resetPDworld() {
+
+        for (int i = 0; i < 3; i++) {
+            pickUpLocations[i][2] = 5;
+            dropOffLocations[i][2] = 0;
+        }
     }
 
     public static void runExperiment(String policy, double alpha, int experimentNo, long seed) {
 
-        initialize();
+        resetQTableAndStartState();
+        resetPDworld();
                 
         int terminalState = 0; 
         boolean firstDropOffLocationFilled = false;
@@ -126,14 +144,6 @@ public class QLearning {
 
         printQTable(10000);
         printRewards(10000);
-    }
-
-    private static void resetPDworld() {
-
-        for (int i = 0; i < 3; i++) {
-            pickUpLocations[i][2] = 5;
-            dropOffLocations[i][2] = 0;
-        }
     }
 
     private static int applyAction(char operator, double alpha) {
@@ -418,10 +428,10 @@ public class QLearning {
     	//System.out.println("Enter the Experiment No : ");
     	//int experimentNo = scanner.nextInt();
     	
-    	writer = new PrintWriter("Output.txt");
+//    	writer = new PrintWriter("Output.txt");
     	    	
     	//if (experimentNo ==1)
-    	runExperiment("PRandom", 0.3, 1, seed1);	// Experiment 1 Execution 1
+//    	runExperiment("PRandom", 0.3, 1, seed1);	// Experiment 1 Execution 1
     	/*runExperiment("PRandom", 0.3, 1, seed2);	// Experiment 1 Execution 2
    		   		
     	//else if (experimentNo == 2)
@@ -438,7 +448,7 @@ public class QLearning {
     	
     	//scanner.close();*/
 
-        Application.launch(PathVisualizer.class);
+//        Application.launch(PathVisualizer.class);
 
     }
 }
