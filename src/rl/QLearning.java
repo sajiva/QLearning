@@ -1,4 +1,4 @@
-package src.rl;
+package rl;
 
 import javafx.application.Application;
 
@@ -60,33 +60,35 @@ public class QLearning {
 
         for (int step = 0; step < steps; step++) {
         	
-            if ((experimentNo == 1 || experimentNo == 2) && step >= 100 ) {
-                System.out.println("Steps: " + step);
-                //printQTable(step);
-                
+            if ((experimentNo == 1 || experimentNo == 2) && step > 0  && !firstDropOffLocationFilled) {
                 // First Drop Off Location Filled
                 for (int i = 0; i < 3; i++) {
-                    if (dropOffLocations[i][2] == 5 && firstDropOffLocationFilled == false) {
+                    if (dropOffLocations[i][2] == 5) {
                     	firstDropOffLocationFilled = true;
+                        System.out.println("First drop-off location filled.");
                     	printQTable(step);
                         break;
                     }
                 }
             }
 
+            if (experimentNo == 1 && step == 100) {
+                printQTable(step);
+            }
+
             if ((experimentNo == 2 || experimentNo == 4) && step % 100 == 0 && step <= 2000 && step > 0) {
-                System.out.println("Steps: " + step);
                 printQTable(step);
             }
             
             if (isTerminalState()) {
 
                 terminalState++;
-                System.out.println("Terminal state " + terminalState + " Number of steps: " + step);
+                System.out.println("Terminal state " + terminalState);
                 printQTable(step);
 
                 // Exit if terminal state reached 4th time for PExploit1 and PExploit2
                 if (terminalState == 4 && !policy.equalsIgnoreCase(policies.get(0))) {
+                    printRewards(step);
                     return;
                 }
 
@@ -98,8 +100,8 @@ public class QLearning {
             currentState = applyAction(operator, alpha);
         }
 
-        System.out.println("Steps: 10000");
         printQTable(10000);
+        printRewards(10000);
     }
 
     private static void resetPDworld() {
@@ -328,10 +330,7 @@ public class QLearning {
 
     private static void printQTable(int step) {
 
-        System.out.println("Bank account of the agent: " + bankAccount);
-        System.out.println(String.format("Rewards received/Number of operators: %.4f", bankAccount/step));
-        System.out.println(String.format("Blocks delivered/Number of operators: %.4f",  (double)noOfBlocksDelivered/step));
-        System.out.println("Q-Table: ");
+        System.out.println("Step: " + step);
         System.out.println("\t\t\tN\t\tE\t\tW\t\tS\n");
         for (int i = 0; i < 50; i++) {
             System.out.print("(" + states[i][0] + "," + states[i][1] + "," + states[i][2] + ")" + "\t\t");
@@ -341,6 +340,12 @@ public class QLearning {
             System.out.print("\n");
         }
         System.out.print("\n");
+    }
+
+    private static void printRewards(int step) {
+        System.out.println("Bank account of the agent: " + bankAccount);
+        System.out.println(String.format("Rewards received/Number of operators: %.4f", bankAccount/step));
+        System.out.println(String.format("Blocks delivered/Number of operators: %.4f",  (double)noOfBlocksDelivered/step));
     }
 
     public static List<List<Character>> findAttractivePaths() {
