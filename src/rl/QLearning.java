@@ -1,4 +1,4 @@
-package src.rl;
+package rl;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -81,22 +81,16 @@ public class QLearning {
 
         resetQTableAndStartState();
         resetPDworld();
-                
+
         int terminalState = 0; 
         boolean firstDropOffLocationFilled = false;
-        
-        writer.print("Experiment No : " + experimentNo + "\t");
-        
-        for(int i = 1; i <= 4;i++ ){
-        	if (experimentNo == i){
-        		expExecutionNumber[i-1]++;
-        		writer.print("Experiment Execution No : " + expExecutionNumber[i-1] + "\t");
-        	}
-        }
-        
-        writer.println("Seed : " + seed);
-        
+
         random = new Random(seed);
+        expExecutionNumber[experimentNo - 1]++;
+        
+        writer.print("Experiment: " + experimentNo + "\t");
+        writer.print("Execution: " + expExecutionNumber[experimentNo - 1] + "\t");
+        writer.println("Seed: " + seed);
         
         for (int step = 0; step < steps; step++) {
         	
@@ -126,8 +120,8 @@ public class QLearning {
                 writer.println("Terminal state " + terminalState);
                 printQTable(step);
 
-                // Exit if terminal state reached 4th time for PExploit1 and PExploit2
-                if (terminalState == 4 && !policy.equalsIgnoreCase(policies.get(0))) {
+                // Exit if terminal state reached 4th time
+                if (terminalState == 4) {
                     printRewards(step);
                     return;
                 } 
@@ -362,21 +356,16 @@ public class QLearning {
 
     private static void printQTable(int step) {
 
-        writer.println("Current Step : " + step);
+        writer.println("Current Step: " + step);
         writer.println("X : " + states[0][2]); // X = 0
-        writer.println("\t\t\tN\tE\tW\tS\n");
-        for (int i = 0; i < 25; i++) {
-            writer.print("(" + states[i][0] + "," + states[i][1] + ")" + "\t\t\t");
-            for (int j = 0; j < 4; j++) {
-                writer.print(String.format("%.2f\t", QTable[i][j]));
+        writer.println("\t\tN\t\tE\t\tW\t\tS\n");
+        for (int i = 0; i < 50; i++) {
+
+            if (i == 25) {
+                writer.println("\nX : " + states[25][2]); // X = 1
+                writer.println("\t\tN\t\tE\t\tW\t\tS\n");
             }
-            writer.print("\n");
-        }
-        writer.print("\n");
-        writer.println("X : " + states[25][2]); // X = 1
-        writer.println("\t\t\tN\tE\tW\tS\n");
-        for (int i = 25; i < 50; i++) {
-            writer.print("(" + states[i][0] + "," + states[i][1] + ")" + "\t\t\t");
+            writer.print("(" + states[i][0] + "," + states[i][1] + ")" + "\t");
             for (int j = 0; j < 4; j++) {
                 writer.print(String.format("%.2f\t", QTable[i][j]));
             }
