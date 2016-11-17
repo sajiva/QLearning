@@ -13,7 +13,15 @@ import javafx.stage.Stage;
 import java.util.List;
 
 public class PathVisualizer extends Application {
-
+	
+	/*private List<List<Character>> attractivePaths;
+	private List<List<Double>> attractivePathsQValues;
+	
+	PathVisualizer(List<List<Character>> attractivePaths_QLearning, List<List<Double>> attractivePathsQValues_QLearning){
+		attractivePaths = attractivePaths_QLearning;
+		attractivePathsQValues = attractivePathsQValues_QLearning;
+	}
+	*/
     @Override
     public void start(Stage primaryStage) throws Exception {
 
@@ -31,19 +39,20 @@ public class PathVisualizer extends Application {
         String leftArrow = "\u2190";
         String rightArrow = "\u2192";
 
-        List<List<Character>> attractivePaths = QLearning.findAttractivePaths();
+        QLearning qLearningObj = QLearning.findAttractivePaths();
+        
         int r = 0;
         for (int i = 0; i < 50; i++) {
             int c = i % 5;
 //            for (int j = 0; j < 5; j++) {
-            List<Character> paths = attractivePaths.get(i);
+            List<Character> paths = qLearningObj.attractivePaths.get(i);
+            List<Double> maxQValuesList = qLearningObj.attractivePathsQValues.get(i);
             Text arrows = null;
-//            System.out.println("State No : " + i);
-//            System.out.println("Path size : " + paths.size());
+                        
             if (paths.size() == 1) {
                 switch (paths.get(0)) {
                     case 'N':
-                        arrows = new Text(upArrow);
+                        arrows = new Text((maxQValuesList.get(0).toString()) + upArrow);
                         break;
                     case 'E':
                         arrows = new Text(rightArrow);

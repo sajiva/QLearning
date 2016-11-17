@@ -32,7 +32,13 @@ public class QLearning {
     private static List<String> policies = Arrays.asList("PRandom","PExploit1","PExploit2");
     private static double bankAccount = 0;
     private static int noOfBlocksDelivered = 0;
+    List<List<Character>> attractivePaths;
+	List<List<Double>> attractivePathsQValues;
 
+    QLearning(List<List<Character>> attractivePaths_Visualizer, List<List<Double>> attractivePathsQValues_Visualizer){
+    	attractivePaths = attractivePaths_Visualizer;
+		attractivePathsQValues = attractivePathsQValues_Visualizer;
+    }
     private static void initialize() {
         int count = 0;
 
@@ -377,8 +383,9 @@ public class QLearning {
         writer.println(String.format("Blocks delivered/Number of operators: %.4f",  (double)noOfBlocksDelivered/step));
     }
 
-    public static List<List<Character>> findAttractivePaths() {
+    public static QLearning findAttractivePaths() {
         List<List<Character>> attractivePaths = new ArrayList<>();
+        List<List<Double>> attractivePathsQValues = new ArrayList<>();
 
         for (int i = 0; i < 50; i++) {
 
@@ -391,16 +398,18 @@ public class QLearning {
             }
             double maxQValue = Collections.max(qValues);
             List<Character> paths = new ArrayList<>();
+            List<Double> maxQValuesList = new ArrayList<>();
 
             for (int k = 0; k < 4; k++) {
-                if (Double.compare(QTable[i][k], maxQValue) == 0
-                        && validOperators.contains(operators.get(k))) {
+                if (Double.compare(QTable[i][k], maxQValue) == 0 && validOperators.contains(operators.get(k))) {
                     paths.add(operators.get(k));
+                    maxQValuesList.add(QTable[i][k]);
                 }
             }
             attractivePaths.add(paths);
+            attractivePathsQValues.add(maxQValuesList);
         }
-        return attractivePaths;
+        return new QLearning(attractivePaths,attractivePathsQValues);
     }
 
     public static void main(String args[]) throws FileNotFoundException {
@@ -413,10 +422,8 @@ public class QLearning {
     	    	
     	//if (experimentNo ==1)
     	runExperiment("PRandom", 0.3, 1, seed1);	// Experiment 1 Execution 1
-    	Application.launch(PathVisualizer.class);
-   		runExperiment("PRandom", 0.3, 1, seed2);	// Experiment 1 Execution 2
-   		Application.launch(PathVisualizer.class);
-   		
+    	/*runExperiment("PRandom", 0.3, 1, seed2);	// Experiment 1 Execution 2
+   		   		
     	//else if (experimentNo == 2)
        	runExperiment("PExploit1", 0.3, 2, seed1);  // Experiment 2 Execution 1
        	runExperiment("PExploit1", 0.3, 2, seed2);  // Experiment 2 Execution 2
@@ -429,7 +436,7 @@ public class QLearning {
     	runExperiment("PExploit2", 0.5, 4, seed1);	// Experiment 4 Execution 1
     	runExperiment("PExploit2", 0.5, 4, seed2);	// Experiment 4 Execution 2
     	
-    	//scanner.close();
+    	//scanner.close();*/
 
         Application.launch(PathVisualizer.class);
 
