@@ -60,7 +60,7 @@ public class PathVisualizer extends Application {
                         arrows = new Text(upArrow);
                         arrowValuesNorth = new Text (String.format("%.2f", maxQValuesList.get(0)) + "\n");
                         break;
-                    case 'E':
+                    case 'E': 
                         arrows = new Text(rightArrow);
                         arrowValuesEast = new Text (String.format("%.2f", maxQValuesList.get(0)) + "\n");
                         break;

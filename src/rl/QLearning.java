@@ -148,7 +148,7 @@ public class QLearning {
 
         int nextState = 0;
 
-        switch (operator) {
+        switch (operator) { 
             case 'P':
                 nextState = currentState + 25;
                 takeBlockFromPickUpLocation(states[currentState]);
