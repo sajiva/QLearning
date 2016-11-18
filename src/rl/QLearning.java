@@ -1,4 +1,4 @@
-package rl;
+package src.rl;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
