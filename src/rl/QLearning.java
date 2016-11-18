@@ -1,4 +1,4 @@
-package src.rl;
+package rl;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -89,10 +89,18 @@ public class QLearning {
 
         random = new Random(seed);
         expExecutionNumber[experimentNo - 1]++;
-        
-        writer.print("Experiment: " + experimentNo + "\t");
-        writer.print("Execution: " + expExecutionNumber[experimentNo - 1] + "\t");
-        writer.println("Seed: " + seed);
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Experiment: " + experimentNo + "\t");
+        stringBuilder.append("Execution: " + expExecutionNumber[experimentNo - 1] + "\t");
+        stringBuilder.append("\nSeed: " + seed + "\n");
+
+        writer.write(stringBuilder.toString());
+        System.out.print(stringBuilder.toString());
+
+//        writer.print("Experiment: " + experimentNo + "\t");
+//        writer.print("Execution: " + expExecutionNumber[experimentNo - 1] + "\t");
+//        writer.println("Seed: " + seed);
         
         for (int step = 0; step < steps; step++) {
         	
@@ -102,6 +110,7 @@ public class QLearning {
                     if (dropOffLocations[i][2] == 5) {
                     	firstDropOffLocationFilled = true;
                         writer.println("First drop-off location filled.");
+                        System.out.println("First drop-off location filled.");
                     	printQTable(step);
                         break;
                     }
@@ -120,6 +129,7 @@ public class QLearning {
 
                 terminalState++;
                 writer.println("Terminal state " + terminalState);
+                System.out.println("Terminal state " + terminalState);
                 printQTable(step);
 
                 // Exit if terminal state reached 4th time
@@ -358,22 +368,27 @@ public class QLearning {
 
     private static void printQTable(int step) {
 
-        writer.println("Current Step: " + step);
-        writer.println("X : " + states[0][2]); // X = 0
-        writer.println("\t\tN\t\tE\t\tW\t\tS\n");
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Current Step: " + step);
+        stringBuilder.append("\nX : " + states[0][2]); // X = 0
+        stringBuilder.append("\n\t\tN\t\tE\t\tW\t\tS\n");
+
         for (int i = 0; i < 50; i++) {
 
             if (i == 25) {
-                writer.println("\nX : " + states[25][2]); // X = 1
-                writer.println("\t\tN\t\tE\t\tW\t\tS\n");
+                stringBuilder.append("\nX : " + states[25][2]); // X = 1
+                stringBuilder.append("\n\t\tN\t\tE\t\tW\t\tS\n");
             }
-            writer.print("(" + states[i][0] + "," + states[i][1] + ")" + "\t");
+            stringBuilder.append("(" + states[i][0] + "," + states[i][1] + ")" + "\t");
             for (int j = 0; j < 4; j++) {
-                writer.print(String.format("%.2f\t", QTable[i][j]));
+                stringBuilder.append(String.format("%.2f\t", QTable[i][j]));
             }
-            writer.print("\n");
+            stringBuilder.append("\n");
         }
-        writer.print("\n");
+        stringBuilder.append("\n");
+
+        writer.print(stringBuilder.toString());
+        System.out.println(stringBuilder.toString());
     }
 
     private static void printRewards(int step) {

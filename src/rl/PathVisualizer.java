@@ -31,7 +31,7 @@ public class PathVisualizer extends Application {
         for (int i = 2; i <= 8; i++) {
             int experiment = Math.round((i+1)/2);
             int execution = (i % 2 == 0) ? 2 : 1;
-            System.out.println("experiment " + experiment + " execution " + execution);
+//            System.out.println("experiment " + experiment + " execution " + execution);
 
             primaryStage = new Stage();
             primaryStage.setTitle("Experiment " + experiment + " Execution " + execution);
