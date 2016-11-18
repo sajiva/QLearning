@@ -42,12 +42,13 @@ public class PathVisualizer extends Application {
         QLearning.closePrinter();
     }
 
-    public static void visualizePath(Stage primaryStage) {
+    @SuppressWarnings("null")
+	public static void visualizePath(Stage primaryStage) {
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setGridLinesVisible(true);
        
-        Scene scene = new Scene(grid, 1600, 1400);
+        Scene scene = new Scene(grid, 900, 700);
         primaryStage.setScene(scene);
 
         String upArrow = "\u2191";
@@ -63,7 +64,7 @@ public class PathVisualizer extends Application {
             int c = i % 5;
             List<Character> paths = attractivePaths.get(i);
             Text arrows = null;
-
+            
             if (paths.size() == 1) {
                 switch (paths.get(0)) {
                     case 'N':
@@ -149,7 +150,7 @@ public class PathVisualizer extends Application {
                 
                 r++;
             }
-            arrows.setFont(Font.font("Tahoma", FontWeight.NORMAL, 40));
+            //arrows.setFont(Font.font("Tahoma", FontWeight.NORMAL, 26));
             arrows.setTextAlignment(TextAlignment.CENTER);
             grid.add(arrows, c, r);
             
@@ -157,7 +158,7 @@ public class PathVisualizer extends Application {
             emptyCol.setStyle("-fx-background-color: palegreen; ");
             grid.add(emptyCol, 5, r);
             grid.add(new Text("     "), 5, r);
-            
+             
             String qValueN = String.format("%.2f", QTable[i][0]);
             String qValueE = String.format("%.2f", QTable[i][1]);
             String qValueW = String.format("%.2f", QTable[i][2]);
