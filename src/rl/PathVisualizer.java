@@ -14,23 +14,31 @@ import java.util.List;
 
 public class PathVisualizer extends Application {
 
-    private static long seed1 = 12345;
-    private static long seed2 = 67890;
+    private static long[] seed = new long[] {12345, 67890};
+    private static String[] policies = new String[] {"PRandom","PExploit1","PExploit2", "PExploit2"};
+    private static double[] alpha = new double[] {0.3, 0.3, 0.3, 0.5};
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         
         QLearning.initialize();
 
-        QLearning.runExperiment("PRandom", 0.3, 1, seed1);	// Experiment 1 Execution 1
+        QLearning.runExperiment(policies[0], alpha[0], 1, seed[0]);	// Experiment 1 Execution 1
         primaryStage.setTitle("Experiment 1 Execution 1");
         visualizePath(primaryStage);
 
-        Stage secondStage = new Stage();
-        secondStage.setTitle("Experiment 1 Execution 2");
-        QLearning.runExperiment("PRandom", 0.3, 1, seed2);	// Experiment 1 Execution 2
-        visualizePath(secondStage);
-         
+        for (int i = 2; i <= 8; i++) {
+            int experiment = Math.round((i+1)/2);
+            int execution = (i % 2 == 0) ? 2 : 1;
+            System.out.println("experiment " + experiment + " execution " + execution);
+
+            primaryStage = new Stage();
+            primaryStage.setTitle("Experiment " + experiment + " Execution " + execution);
+            QLearning.runExperiment(policies[experiment - 1], alpha[experiment - 1], experiment, seed[execution - 1]);
+            visualizePath(primaryStage);
+        }
+
+        QLearning.closePrinter();
     }
 
     public static void visualizePath(Stage primaryStage) {
@@ -53,28 +61,21 @@ public class PathVisualizer extends Application {
         for (int i = 0; i < 50; i++) {
             int c = i % 5;
             List<Character> paths = attractivePaths.get(i);
-//            List<Double> maxQValuesList = qLearningObj.attractivePathsQValues.get(i);
             Text arrows = null;
 
-//            Text arrowValuesNorth = null, arrowValuesSouth = null, arrowValuesEast = null, arrowValuesWest = null;
-            
             if (paths.size() == 1) {
                 switch (paths.get(0)) {
                     case 'N':
                         arrows = new Text(upArrow);
-//                        arrowValuesNorth = new Text (String.format("%.2f", maxQValuesList.get(0)) + "\n");
                         break;
                     case 'E':
                         arrows = new Text(rightArrow);
-//                        arrowValuesEast = new Text (String.format("%.2f", maxQValuesList.get(0)) + "\n");
                         break;
                     case 'W':
                         arrows = new Text(leftArrow);
-//                        arrowValuesWest = new Text (String.format("%.2f", maxQValuesList.get(0)) + "\t");
                         break;
                     case 'S':
                         arrows = new Text(downArrow);
-//                        arrowValuesSouth = new Text (String.format("%.2f", maxQValuesList.get(0)));
                         break;
                 }
             } else if (paths.size() == 2) {
@@ -102,12 +103,8 @@ public class PathVisualizer extends Application {
                     arrows = new Text(leftArrow + rightArrow + "\n" + downArrow);
                 }
             } else  {
-//                if (paths.contains('N') && paths.contains('S') && paths.contains('E') && paths.contains('W')) {
-//                    arrows = new Text(upArrow + "\n" + leftArrow + rightArrow + "\n" + downArrow  );
                 arrows = new Text(" ");
-//                }
             }
-            //Text arrows = new Text("\u2191\n\u2190   \u2192\n\u2193");
 
             if(r == 0){
                 grid.add(new Text(" States"), 0, r);
@@ -137,29 +134,8 @@ public class PathVisualizer extends Application {
             Text qValues = new Text(qValueN + "\n" + qValueW + "\t\t" + qValueE + "\n" + qValueS);
             qValues.setFont(Font.font("Tahoma", FontWeight.NORMAL, 26));
             qValues.setTextAlignment(TextAlignment.CENTER);
-
             grid.add(qValues, c + 5, r);
-//            if (arrowValuesNorth != null)
-//        		grid.add(arrowValuesNorth, c + 5, r);
-//            else
-//            	grid.add(new Text("\t"), c + 5, r);
-//
-//            if (arrowValuesWest != null)
-//        		grid.add(arrowValuesWest, c + 5, r);
-//            else
-//            	grid.add(new Text("\t"), c + 5, r);
-//
-//            if (arrowValuesEast!= null)
-//        		grid.add(arrowValuesEast, c + 5, r);
-//            else
-//            	grid.add(new Text("\t"), c + 5, r);
-//
-//            if (arrowValuesSouth != null)
-//        		grid.add(arrowValuesSouth, c + 5, r);
-//            else
-//            	grid.add(new Text("\t"), c + 5, r);
-//
-//
+
             if (c == 4)
             	r++;
         }

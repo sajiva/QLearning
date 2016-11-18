@@ -22,24 +22,21 @@ public class QLearning {
             {2, 5, 0}
     };
     private static int[][] states = new int[50][3];
-
-    public static double[][] getQTable() {
-        return QTable;
-    }
-
     private static double[][] QTable = new double[50][6];
     private static int[] expExecutionNumber = new int[]{0,0,0,0}; // Experiment No 1 to 4 Execution Number
     private static List<Character> operators = Arrays.asList('N', 'E', 'W', 'S', 'P', 'D');
     private static List<String> policies = Arrays.asList("PRandom","PExploit1","PExploit2");
     private static double bankAccount = 0;
     private static int noOfBlocksDelivered = 0;
-    List<List<Character>> attractivePaths;
-	List<List<Double>> attractivePathsQValues;
 
-    QLearning(List<List<Character>> attractivePaths_Visualizer, List<List<Double>> attractivePathsQValues_Visualizer){
-    	attractivePaths = attractivePaths_Visualizer;
-		attractivePathsQValues = attractivePathsQValues_Visualizer;
+    public static double[][] getQTable() {
+        return QTable;
     }
+
+    public static void closePrinter() {
+        writer.close();
+    }
+
     public static void initialize() {
         int count = 0;
 
@@ -127,7 +124,7 @@ public class QLearning {
 
                 // Exit if terminal state reached 4th time
                 if (terminalState == 4) {
-                    printRewards(step);
+//                    printRewards(step);
                     return;
                 } 
 
@@ -140,7 +137,7 @@ public class QLearning {
         }
 
         printQTable(10000);
-        printRewards(10000);
+//        printRewards(10000);
     }
 
     private static int applyAction(char operator, double alpha) {
@@ -388,7 +385,6 @@ public class QLearning {
     public static List<List<Character>> findAttractivePaths() {
 
         List<List<Character>> attractivePaths = new ArrayList<>();
-//        List<List<Double>> attractivePathsQValues = new ArrayList<>();
 
         for (int i = 0; i < 50; i++) {
 
@@ -401,17 +397,15 @@ public class QLearning {
             }
             double maxQValue = Collections.max(qValues);
             List<Character> paths = new ArrayList<>();
-//            List<Double> maxQValuesList = new ArrayList<>();
 
             for (int k = 0; k < 4; k++) {
                 if (Double.compare(QTable[i][k], maxQValue) == 0 && validOperators.contains(operators.get(k))) {
                     paths.add(operators.get(k));
-//                    maxQValuesList.add(QTable[i][k]);
                 }
             }
             attractivePaths.add(paths);
-//            attractivePathsQValues.add(maxQValuesList);
         }
+
         return attractivePaths;
     }
 
