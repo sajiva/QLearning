@@ -1,9 +1,11 @@
-package src.rl;
+package rl;
 
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
@@ -21,11 +23,11 @@ public class PathVisualizer extends Application {
         QLearning.initialize();
 
         QLearning.runExperiment("PRandom", 0.3, 1, seed1);	// Experiment 1 Execution 1
-        primaryStage.setTitle("Q-learning Path Visualization 1");
+        primaryStage.setTitle("Experiment 1 Execution 1");
         visualizePath(primaryStage);
 
         Stage secondStage = new Stage();
-        secondStage.setTitle("Q-learning Path Visualization 2");
+        secondStage.setTitle("Experiment 1 Execution 2");
         QLearning.runExperiment("PRandom", 0.3, 1, seed2);	// Experiment 1 Execution 2
         visualizePath(secondStage);
          
@@ -36,7 +38,7 @@ public class PathVisualizer extends Application {
         grid.setAlignment(Pos.CENTER);
         grid.setGridLinesVisible(true);
 
-        Scene scene = new Scene(grid, 1000, 2000);
+        Scene scene = new Scene(grid, 1600, 1400);
         primaryStage.setScene(scene);
 
         String upArrow = "\u2191";
@@ -44,33 +46,35 @@ public class PathVisualizer extends Application {
         String leftArrow = "\u2190";
         String rightArrow = "\u2192";
 
-        QLearning qLearningObj = QLearning.findAttractivePaths();
+        List<List<Character>> attractivePaths = QLearning.findAttractivePaths();
+        double[][] QTable = QLearning.getQTable();
 
         int r = 0;
         for (int i = 0; i < 50; i++) {
             int c = i % 5;
-            List<Character> paths = qLearningObj.attractivePaths.get(i);
-            List<Double> maxQValuesList = qLearningObj.attractivePathsQValues.get(i);
+            List<Character> paths = attractivePaths.get(i);
+//            List<Double> maxQValuesList = qLearningObj.attractivePathsQValues.get(i);
             Text arrows = null;
-            Text arrowValuesNorth = null, arrowValuesSouth = null, arrowValuesEast = null, arrowValuesWest = null;
+
+//            Text arrowValuesNorth = null, arrowValuesSouth = null, arrowValuesEast = null, arrowValuesWest = null;
             
             if (paths.size() == 1) {
                 switch (paths.get(0)) {
                     case 'N':
                         arrows = new Text(upArrow);
-                        arrowValuesNorth = new Text (String.format("%.2f", maxQValuesList.get(0)) + "\n");
+//                        arrowValuesNorth = new Text (String.format("%.2f", maxQValuesList.get(0)) + "\n");
                         break;
                     case 'E': 
                         arrows = new Text(rightArrow);
-                        arrowValuesEast = new Text (String.format("%.2f", maxQValuesList.get(0)) + "\n");
+//                        arrowValuesEast = new Text (String.format("%.2f", maxQValuesList.get(0)) + "\n");
                         break;
                     case 'W':
                         arrows = new Text(leftArrow);
-                        arrowValuesWest = new Text (String.format("%.2f", maxQValuesList.get(0)) + "\t");
+//                        arrowValuesWest = new Text (String.format("%.2f", maxQValuesList.get(0)) + "\t");
                         break;
                     case 'S':
                         arrows = new Text(downArrow);
-                        arrowValuesSouth = new Text (String.format("%.2f", maxQValuesList.get(0)));
+//                        arrowValuesSouth = new Text (String.format("%.2f", maxQValuesList.get(0)));
                         break;
                 }
             } else if (paths.size() == 2) {
@@ -121,31 +125,41 @@ public class PathVisualizer extends Application {
                 grid.add(new Text("      "), 4, r);
                 r++;
             }
-//            arrows.setFont(Font.font("Tahoma", FontWeight.NORMAL, 32));
+            arrows.setFont(Font.font("Tahoma", FontWeight.NORMAL, 40));
             arrows.setTextAlignment(TextAlignment.CENTER);
             grid.add(arrows, c, r);
-            
-            if (arrowValuesNorth != null) 
-        		grid.add(arrowValuesNorth, c + 5, r);
-            else
-            	grid.add(new Text("\t"), c + 5, r);
 
-            if (arrowValuesWest != null) 
-        		grid.add(arrowValuesWest, c + 5, r);
-            else
-            	grid.add(new Text("\t"), c + 5, r);
-            
-            if (arrowValuesEast!= null) 
-        		grid.add(arrowValuesEast, c + 5, r);
-            else
-            	grid.add(new Text("\t"), c + 5, r);
-            
-            if (arrowValuesSouth != null) 
-        		grid.add(arrowValuesSouth, c + 5, r);
-            else
-            	grid.add(new Text("\t"), c + 5, r);
-            
-           
+            String qValueN = String.format("%.2f", QTable[i][0]);
+            String qValueE = String.format("%.2f", QTable[i][1]);
+            String qValueW = String.format("%.2f", QTable[i][2]);
+            String qValueS = String.format("%.2f", QTable[i][3]);
+
+            Text qValues = new Text(qValueN + "\n" + qValueW + "\t\t" + qValueE + "\n" + qValueS);
+            qValues.setFont(Font.font("Tahoma", FontWeight.NORMAL, 26));
+            qValues.setTextAlignment(TextAlignment.CENTER);
+
+            grid.add(qValues, c + 5, r);
+//            if (arrowValuesNorth != null)
+//        		grid.add(arrowValuesNorth, c + 5, r);
+//            else
+//            	grid.add(new Text("\t"), c + 5, r);
+//
+//            if (arrowValuesWest != null)
+//        		grid.add(arrowValuesWest, c + 5, r);
+//            else
+//            	grid.add(new Text("\t"), c + 5, r);
+//
+//            if (arrowValuesEast!= null)
+//        		grid.add(arrowValuesEast, c + 5, r);
+//            else
+//            	grid.add(new Text("\t"), c + 5, r);
+//
+//            if (arrowValuesSouth != null)
+//        		grid.add(arrowValuesSouth, c + 5, r);
+//            else
+//            	grid.add(new Text("\t"), c + 5, r);
+//
+//
             if (c == 4)
             	r++;
         }
