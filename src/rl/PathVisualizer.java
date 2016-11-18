@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -45,7 +46,7 @@ public class PathVisualizer extends Application {
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setGridLinesVisible(true);
-
+       
         Scene scene = new Scene(grid, 1600, 1400);
         primaryStage.setScene(scene);
 
@@ -107,34 +108,65 @@ public class PathVisualizer extends Application {
             }
 
             if(r == 0){
-                grid.add(new Text(" States"), 0, r);
+            	
+            	GridPane[] gridPane = new GridPane[11];
+            
+            	for(int g = 0 ; g <= 10 ; g++){
+            		gridPane[g] = new GridPane();
+            		gridPane[g].setStyle("-fx-background-color: palegreen; "); 
+            		grid.add(gridPane[g], g, r);
+            	}
+            	            	
+            	grid.add(new Text(" States"), 0, r);
                 grid.add(new Text("  with "), 1, r);
-                grid.add(new Text("  x = "), 2, r);
+                grid.add(new Text("  X = "), 2, r);
                 grid.add(new Text(" 0    "), 3, r);
                 grid.add(new Text("      "), 4, r);
+                
+                grid.add(new Text("  Q Values :"), 6, r);
+                grid.add(new Text("States with X = 0"), 7, r);
+              
                 r++; 
             }
             if(r == 6){
+            	
+            	GridPane[] gridPane = new GridPane[11];
+                
+            	for(int g = 0 ; g <= 10 ; g++){
+            		gridPane[g] = new GridPane();
+            		gridPane[g].setStyle("-fx-background-color: palegreen; "); 
+            		grid.add(gridPane[g], g, r);
+            	}
+            	
                 grid.add(new Text(" States"), 0, r);
                 grid.add(new Text(" with "), 1, r);
-                grid.add(new Text("  x = "), 2, r);
+                grid.add(new Text("  X = "), 2, r);
                 grid.add(new Text(" 1    "), 3, r);
                 grid.add(new Text("      "), 4, r);
+                
+                grid.add(new Text("  Q Values :"), 6, r);
+                grid.add(new Text("States with X = 1"), 7, r);
+                
                 r++;
             }
             arrows.setFont(Font.font("Tahoma", FontWeight.NORMAL, 40));
             arrows.setTextAlignment(TextAlignment.CENTER);
             grid.add(arrows, c, r);
-
+            
+            GridPane emptyCol = new GridPane();
+            emptyCol.setStyle("-fx-background-color: palegreen; ");
+            grid.add(emptyCol, 5, r);
+            grid.add(new Text("     "), 5, r);
+            
             String qValueN = String.format("%.2f", QTable[i][0]);
             String qValueE = String.format("%.2f", QTable[i][1]);
             String qValueW = String.format("%.2f", QTable[i][2]);
             String qValueS = String.format("%.2f", QTable[i][3]);
 
             Text qValues = new Text(qValueN + "\n" + qValueW + "\t\t" + qValueE + "\n" + qValueS);
-            qValues.setFont(Font.font("Tahoma", FontWeight.NORMAL, 26));
+            //qValues.setFont(Font.font("Tahoma", FontWeight.NORMAL, 26));
             qValues.setTextAlignment(TextAlignment.CENTER);
-            grid.add(qValues, c + 5, r);
+            grid.add(qValues, c + 6, r);
 
             if (c == 4)
             	r++;
