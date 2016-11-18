@@ -7,6 +7,7 @@ import java.util.*;
 public class QLearning {
 
 	private static PrintWriter writer;
+    private static PrintWriter writer2;
     private static Random random;
     private static int steps = 10000;
     private static double gamma = 0.3;
@@ -35,6 +36,7 @@ public class QLearning {
 
     public static void closePrinter() {
         writer.close();
+        writer2.close();
     }
 
     public static void initialize() {
@@ -52,6 +54,7 @@ public class QLearning {
 
         try {
             writer = new PrintWriter("Output.txt");
+            writer2 = new PrintWriter("Rewards.txt");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -96,12 +99,10 @@ public class QLearning {
         stringBuilder.append("\nSeed: " + seed + "\n");
 
         writer.write(stringBuilder.toString());
+        writer2.write(stringBuilder.toString());
+        writer2.write("Step\tBankAccount\tRewardsPerOp\tBlocksDeliveredPerOp\n");
         System.out.print(stringBuilder.toString());
 
-//        writer.print("Experiment: " + experimentNo + "\t");
-//        writer.print("Execution: " + expExecutionNumber[experimentNo - 1] + "\t");
-//        writer.println("Seed: " + seed);
-        
         for (int step = 0; step < steps; step++) {
         	
             if ((experimentNo == 1 || experimentNo == 2) && step > 0  && !firstDropOffLocationFilled) {
@@ -124,6 +125,10 @@ public class QLearning {
             if ((experimentNo == 2 || experimentNo == 4) && step % 100 == 0 && step <= 2000 && step > 0) {
                 printQTable(step);
             }
+
+            if (step % 100 == 0 && step <= 2000 && step > 0) {
+                printRewards(step);
+            }
             
             if (isTerminalState()) {
 
@@ -131,10 +136,11 @@ public class QLearning {
                 writer.println("Terminal state " + terminalState);
                 System.out.println("Terminal state " + terminalState);
                 printQTable(step);
+//                printRewards(step);
 
                 // Exit if terminal state reached 4th time
                 if (terminalState == 4) {
-//                    printRewards(step);
+                    printRewards(step);
                     return;
                 } 
 
@@ -392,9 +398,18 @@ public class QLearning {
     }
 
     private static void printRewards(int step) {
-        writer.println("Bank account of the agent: " + bankAccount);
-        writer.println(String.format("Rewards received/Number of operators: %.4f", bankAccount/step));
-        writer.println(String.format("Blocks delivered/Number of operators: %.4f",  (double)noOfBlocksDelivered/step));
+
+        Double rewardsPerOperator = bankAccount/step;
+        Double blocksDeliveredPerOperator = (double)noOfBlocksDelivered/step;
+//        StringBuilder stringBuilder = new StringBuilder();
+//        stringBuilder.append("Bank account of the agent: " + bankAccount);
+//        stringBuilder.append(String.format("\nRewards received/Number of operators: %.4f", rewardsPerOperator));
+//        stringBuilder.append(String.format("\nBlocks delivered/Number of operators: %.4f\n",  blocksDeliveredPerOperator));
+//
+//        System.out.print(stringBuilder.toString());
+
+
+        writer2.write(step + "\t" + bankAccount + "\t" + String.format("%.4f\t%.4f\n", rewardsPerOperator, blocksDeliveredPerOperator));
     }
 
     public static List<List<Character>> findAttractivePaths() {
