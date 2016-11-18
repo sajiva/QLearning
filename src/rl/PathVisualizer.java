@@ -1,4 +1,4 @@
-package src.rl;
+package rl;
 
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -48,7 +48,7 @@ public class PathVisualizer extends Application {
         grid.setAlignment(Pos.CENTER);
         grid.setGridLinesVisible(true);
        
-        Scene scene = new Scene(grid, 900, 700);
+        Scene scene = new Scene(grid, 1700, 1300);
         primaryStage.setScene(scene);
 
         String upArrow = "\u2191";
