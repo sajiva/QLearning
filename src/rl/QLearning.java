@@ -22,6 +22,11 @@ public class QLearning {
             {2, 5, 0}
     };
     private static int[][] states = new int[50][3];
+
+    public static double[][] getQTable() {
+        return QTable;
+    }
+
     private static double[][] QTable = new double[50][6];
     private static int[] expExecutionNumber = new int[]{0,0,0,0}; // Experiment No 1 to 4 Execution Number
     private static List<Character> operators = Arrays.asList('N', 'E', 'W', 'S', 'P', 'D');
@@ -380,9 +385,10 @@ public class QLearning {
         writer.println(String.format("Blocks delivered/Number of operators: %.4f",  (double)noOfBlocksDelivered/step));
     }
 
-    public static QLearning findAttractivePaths() {
+    public static List<List<Character>> findAttractivePaths() {
+
         List<List<Character>> attractivePaths = new ArrayList<>();
-        List<List<Double>> attractivePathsQValues = new ArrayList<>();
+//        List<List<Double>> attractivePathsQValues = new ArrayList<>();
 
         for (int i = 0; i < 50; i++) {
 
@@ -395,18 +401,18 @@ public class QLearning {
             }
             double maxQValue = Collections.max(qValues);
             List<Character> paths = new ArrayList<>();
-            List<Double> maxQValuesList = new ArrayList<>();
+//            List<Double> maxQValuesList = new ArrayList<>();
 
             for (int k = 0; k < 4; k++) {
                 if (Double.compare(QTable[i][k], maxQValue) == 0 && validOperators.contains(operators.get(k))) {
                     paths.add(operators.get(k));
-                    maxQValuesList.add(QTable[i][k]);
+//                    maxQValuesList.add(QTable[i][k]);
                 }
             }
             attractivePaths.add(paths);
-            attractivePathsQValues.add(maxQValuesList);
+//            attractivePathsQValues.add(maxQValuesList);
         }
-        return new QLearning(attractivePaths,attractivePathsQValues);
+        return attractivePaths;
     }
 
 }
