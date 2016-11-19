@@ -1,4 +1,4 @@
-package rl;
+package src.rl;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -385,9 +385,9 @@ public class QLearning {
                 stringBuilder.append("\nX : " + states[25][2]); // X = 1
                 stringBuilder.append("\n\t\tN\t\tE\t\tW\t\tS\n");
             }
-            stringBuilder.append("(" + states[i][0] + "," + states[i][1] + ")" + "\t");
+            stringBuilder.append("(" + states[i][0] + "," + states[i][1] + ")" + "\t\t");
             for (int j = 0; j < 4; j++) {
-                stringBuilder.append(String.format("%.2f\t", QTable[i][j]));
+                stringBuilder.append(String.format("%.2f\t\t", QTable[i][j]));
             }
             stringBuilder.append("\n");
         }
@@ -409,7 +409,7 @@ public class QLearning {
 //        System.out.print(stringBuilder.toString());
 
 
-        writer2.write(step + "\t" + bankAccount + "\t" + String.format("%.4f\t%.4f\n", rewardsPerOperator, blocksDeliveredPerOperator));
+        writer2.write(step + "\t" + bankAccount + "\t\t" + String.format("%.4f\t\t%.4f\n", rewardsPerOperator, blocksDeliveredPerOperator));
     }
 
     public static List<List<Character>> findAttractivePaths() {
