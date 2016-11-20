@@ -1,12 +1,9 @@
-package src.rl;
+package rl;
 
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
@@ -41,7 +38,6 @@ public class PathVisualizer extends Application {
         QLearning.closePrinter();
     }
 
-    @SuppressWarnings("null")
 	public static void visualizePath(Stage primaryStage) {
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
@@ -149,7 +145,7 @@ public class PathVisualizer extends Application {
                 
                 r++;
             }
-            //arrows.setFont(Font.font("Tahoma", FontWeight.NORMAL, 26));
+
             arrows.setTextAlignment(TextAlignment.CENTER);
             grid.add(arrows, c, r);
             
@@ -164,7 +160,6 @@ public class PathVisualizer extends Application {
             String qValueS = String.format("%.2f", QTable[i][3]);
 
             Text qValues = new Text(qValueN + "\n" + qValueW + "\t\t" + qValueE + "\n" + qValueS);
-            //qValues.setFont(Font.font("Tahoma", FontWeight.NORMAL, 26));
             qValues.setTextAlignment(TextAlignment.CENTER);
             grid.add(qValues, c + 6, r);
 

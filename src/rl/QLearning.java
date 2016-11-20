@@ -1,4 +1,4 @@
-package src.rl;
+package rl;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -69,7 +69,7 @@ public class QLearning {
             }
         }
 
-        currentState = 4; // {5,1,0}
+        currentState = 4; // {1,5,0}
         bankAccount = 0;
         noOfBlocksDelivered = 0;
     }
@@ -136,7 +136,6 @@ public class QLearning {
                 writer.println("Terminal state " + terminalState);
                 System.out.println("Terminal state " + terminalState);
                 printQTable(step);
-//                printRewards(step);
 
                 // Exit if terminal state reached 4th time
                 if (terminalState == 4) {
@@ -153,7 +152,6 @@ public class QLearning {
         }
 
         printQTable(10000);
-//        printRewards(10000);
     }
 
     private static int applyAction(char operator, double alpha) {
@@ -385,9 +383,9 @@ public class QLearning {
                 stringBuilder.append("\nX : " + states[25][2]); // X = 1
                 stringBuilder.append("\n\t\tN\t\tE\t\tW\t\tS\n");
             }
-            stringBuilder.append("(" + states[i][0] + "," + states[i][1] + ")" + "\t\t");
+            stringBuilder.append("(" + states[i][0] + "," + states[i][1] + ")" + "\t");
             for (int j = 0; j < 4; j++) {
-                stringBuilder.append(String.format("%.2f\t\t", QTable[i][j]));
+                stringBuilder.append(String.format("%.2f\t", QTable[i][j]));
             }
             stringBuilder.append("\n");
         }
@@ -401,15 +399,8 @@ public class QLearning {
 
         Double rewardsPerOperator = bankAccount/step;
         Double blocksDeliveredPerOperator = (double)noOfBlocksDelivered/step;
-//        StringBuilder stringBuilder = new StringBuilder();
-//        stringBuilder.append("Bank account of the agent: " + bankAccount);
-//        stringBuilder.append(String.format("\nRewards received/Number of operators: %.4f", rewardsPerOperator));
-//        stringBuilder.append(String.format("\nBlocks delivered/Number of operators: %.4f\n",  blocksDeliveredPerOperator));
-//
-//        System.out.print(stringBuilder.toString());
 
-
-        writer2.write(step + "\t" + bankAccount + "\t\t" + String.format("%.4f\t\t%.4f\n", rewardsPerOperator, blocksDeliveredPerOperator));
+        writer2.write(step + "\t\t" + bankAccount + "\t\t" + String.format("%.4f\t\t%.4f\n", rewardsPerOperator, blocksDeliveredPerOperator));
     }
 
     public static List<List<Character>> findAttractivePaths() {
